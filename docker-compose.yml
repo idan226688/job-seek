@@ -1,0 +1,87 @@
+services:
+  mysql:
+    image: mysql:8.3
+    container_name: jobseek-mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - jobseek-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  qdrant:
+    image: qdrant/qdrant
+    ports:
+      - "6333:6333"
+    healthcheck: #healthcheck is not working for some reason
+      test: ["CMD", "true"]
+      interval: 10s
+      timeout: 5s
+      retries: 1
+    volumes:
+      - qdrant-storage:/qdrant/storage
+    networks:
+      - jobseek-net
+
+  jobseek-app:
+    build: .
+    container_name: jobseek-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - jobseek-net
+
+  redis:
+    image: redis
+    container_name: jobseek-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "sh", "-c", "redis-cli ping | grep PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - jobseek-net
+
+  # jobseek-test:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.test
+  #   container_name: jobseek-test-runner
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: test
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  #     qdrant:
+  #       condition: service_healthy
+  #   networks:
+  #     - jobseek-net
+
+volumes:
+  mysql-data:
+  qdrant-storage:
+
+networks:
+  jobseek-net:
