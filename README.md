@@ -72,7 +72,6 @@ You can add job descriptions using a simple `curl` command:
 curl -X POST http://localhost:8080/api/job/add \
   -H "Content-Type: application/json" \
   -d '{
-    "id": "job_id",
     "content": "<enter the job description here>"
 }'
 ```
