@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -36,6 +37,8 @@ public class MatchService {
     @Autowired(required = false)
     private final QdrantMatchService qdrantMatchService;
     private final MatchCacheService matchCacheService;
+    @Value("${embedding.url}")
+    private String embeddingBaseUrl;
 
     public MatchService(
         CvRepository cvRepository,
@@ -105,7 +108,7 @@ public class MatchService {
                 """, modelName, escapedPrompt);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://host.docker.internal:11434/api/generate"))
+                    .uri(URI.create(embeddingBaseUrl + "/api/generate"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(body))
                     .build();
