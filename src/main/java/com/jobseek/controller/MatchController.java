@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.jobseek.model.Cv;
@@ -71,5 +72,14 @@ public class MatchController {
         Cv saved = cvRepo.save(cv);
         List<JobDescription> relevantJobs = qdrantMatchService.findTopRelevantJobs(saved);
         return matchService.scoreMatchesWithOllama(saved.getId(), "llama3.2", saved, relevantJobs);
+    }
+
+    @GetMapping("/recent")
+    public List<MatchResult> getRecentMatches(
+        @RequestParam String userId,
+        @RequestParam int days
+    ) {
+        LocalDateTime cutoff = LocalDateTime.now().minusDays(days);
+        return matchResultRepository.findByUserIdAndTimestampAfter(userId, cutoff.toString());
     }
 }

@@ -9,5 +9,6 @@ import org.springframework.data.domain.Pageable;
 public interface MatchResultRepository extends JpaRepository<MatchResult, String> {
     List<MatchResult> findByUserIdOrderByTimestampDesc(String userId);
     Page<MatchResult> findByUserIdOrderByTimestampDesc(String userId, Pageable pageable);
+    List<MatchResult> findByUserIdAndTimestampAfter(String userId, String timestamp);
 }
 

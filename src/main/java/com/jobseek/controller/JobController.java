@@ -57,4 +57,9 @@ public class JobController {
     public List<JobDescription> getAllJobs() {
         return jobRepository.findAll();
     }
+
+    @GetMapping("/search")
+    public List<JobDescription> searchJobs(@RequestParam String keyword) {
+        return jobRepository.findByContentContainingIgnoreCase(keyword);
+    }
 }
