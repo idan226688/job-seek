@@ -179,7 +179,19 @@ curl http://localhost:8080/api/cv/cvs
 ```
 
 🔍 View a Specific CV by ID
+
 ```bash
 curl http://localhost:8080/api/cv/my_cv
 ```
 
+🔍 Filter Jobs by Keyword
+
+```bash
+curl "http://localhost:8080/api/job/search?keyword=<keyword>"
+```
+
+🔍 View Recent Match Results
+
+```bash
+curl "http://localhost:8080/api/match/recent?userId=my_cv&days=<number of days>"
+```
