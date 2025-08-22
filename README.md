@@ -45,6 +45,11 @@ cd job-seek
 ```bash
 cp .env.example .env
 ```
+Add a new line to your .env file for authentication using JWT:
+
+JWT_SECRET=your-very-long-random-secret
+
+Replace your-very-long-random-secret with a secure, random string (32+ characters).
 
 3. Start the application and MySQL using Docker Compose:
 
