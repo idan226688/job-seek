@@ -51,7 +51,7 @@ JWT_SECRET=your-very-long-random-secret
 
 Replace your-very-long-random-secret with a secure, random string (32+ characters).
 
-3. Start the application and MySQL using Docker Compose:
+3. Start the application using Docker Compose:
 
 ```bash
 docker-compose up --build
