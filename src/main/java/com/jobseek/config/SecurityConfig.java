@@ -1,6 +1,5 @@
 package com.jobseek.config;
 
-import com.jobseek.auth.CustomUserDetailsService;
 import com.jobseek.auth.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

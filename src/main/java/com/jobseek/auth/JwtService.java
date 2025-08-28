@@ -2,7 +2,9 @@ package com.jobseek.auth;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +15,16 @@ import java.util.Date;
 public class JwtService {
 
     private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
-    private static final String SECRET = "YOUR_SECRET_KEY_FOR_SIGNING_SHOULD_BE_LONG";
+    @Value("${jwt.secret}")
+    private String secret;
 
-    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
+    private Key key;
 
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
+    
     public String generateToken(String username) {
         return Jwts.builder()
             .setSubject(username)
